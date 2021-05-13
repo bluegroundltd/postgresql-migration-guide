@@ -1,0 +1,30 @@
+create database mydb;
+create extension plperl; /* Required by Bucardo */
+
+create user app1 with login encrypted password '$APP1_PASS';
+grant usage on schema public to app1;
+grant select, update, delete, insert on all tables in schema public to app1;
+grant connect, temp on database bgdb to app1;
+grant execute on all functions in schema public to app1;
+grant usage, select, update on all sequences in schema public to app1;
+
+create user app1_ro with LOGIN encrypted password '$APP1_RO_PASS';
+grant usage on schema public to app1_ro;
+grant select on all tables in schema public to app1_ro;
+grant connect, temp on database bgdb to app1_ro;
+grant execute on all functions in schema public to app1_ro;
+grant usage, select on all sequences in schema public to app1_ro;
+
+create user app1 with login encrypted password '$APP2_PASS';
+grant usage on schema public to app1;
+grant select, update, delete, insert on all tables in schema public to app1;
+grant connect, temp on database bgdb to app1;
+grant execute on all functions in schema public to app1;
+grant usage, select, update on all sequences in schema public to app1;
+
+create user app2_ro with LOGIN encrypted password '$APP2_RO_PASS';
+grant usage on schema public to app2_ro;
+grant select on all tables in schema public to app2_ro;
+grant connect, temp on database bgdb to app2_ro;
+grant execute on all functions in schema public to app2_ro;
+grant usage, select on all sequences in schema public to app2_ro;

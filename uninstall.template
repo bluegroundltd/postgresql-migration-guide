@@ -1,0 +1,17 @@
+DROP TRIGGER bucardo_delta_namemaker ON bucardo.bucardo_delta_names;
+DROP TRIGGER bucardo_note_trunc_$BUCARDO_SYNC_NAME ON table_1;
+DROP TRIGGER bucardo_delta ON table_1;
+DROP TRIGGER bucardo_kick_$BUCARDO_SYNC_NAME ON table_1;
+DROP TRIGGER bucardo_note_trunc_$BUCARDO_SYNC_NAME ON table_2;
+DROP TRIGGER bucardo_delta ON table_2;
+DROP TRIGGER bucardo_kick_$BUCARDO_SYNC_NAME ON table_2;
+DROP TRIGGER bucardo_note_trunc_$BUCARDO_SYNC_NAME ON table_2_lock;
+DROP TRIGGER bucardo_delta ON table_2_lock;
+DROP TRIGGER bucardo_kick_$BUCARDO_SYNC_NAME ON table_2_lock;
+DROP TRIGGER bucardo_note_trunc_$BUCARDO_SYNC_NAME ON payment;
+DROP TRIGGER bucardo_delta ON payment;
+DROP TRIGGER bucardo_kick_$BUCARDO_SYNC_NAME ON payment;
+DROP TRIGGER bucardo_note_trunc_$BUCARDO_SYNC_NAME ON booking;
+DROP TRIGGER bucardo_delta ON booking;
+DROP TRIGGER bucardo_kick_$BUCARDO_SYNC_NAME ON booking;
+DROP SCHEMA bucardo CASCADE;
