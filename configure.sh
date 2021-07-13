@@ -2,6 +2,8 @@
 DUMPFILE="mydb-$(date +%s).dump"
 export BUCARDO_DEBUG=4
 
+[ -z $BUCARDO_SYNC_NAME ] && echo "Please set BUCARDO_SYNC_NAME" && exit 1
+
 [ -z $BUCARDO_OLD_HOSTNAME ] && echo "Please set BUCARDO_OLD_HOSTNAME" && exit 1
 [ -z $BUCARDO_OLD_USERNAME ] && echo "Please set BUCARDO_OLD_USERNAME" && exit 1
 [ -z $BUCARDO_OLD_PASSWORD ] && echo "Please set BUCARDO_OLD_PASSWORD" && exit 1
@@ -29,7 +31,7 @@ chmod 0600 ~/.pgpass
 
 # Create the database and the user accounts in the new (empty) database
 envsubst < setup_new_database.template > setup_new_database.sql
-psql -h ${BUCARDO_NEW_HOSTNAME} -U ${BUCARDO_NEW_USERNAME} -f postgres setup_new_database.sql
+psql -h ${BUCARDO_NEW_HOSTNAME} -U ${BUCARDO_NEW_USERNAME} -f setup_new_database.sql postgres
 
 # Setup Bucardo multi-master replication
 # XXX: Unfortunately Bucardo does not read the .pgpass file,
@@ -66,10 +68,10 @@ bucardo_cmd add dbgroup my_group target_db:source
 
 # Transfer the database schema
 pg_dump -v -h $BUCARDO_OLD_HOSTNAME -U $BUCARDO_OLD_USERNAME --schema-only $BUCARDO_OLD_DATABASE --file=schema.sql
-psql -h $BUCARDO_NEW_HOSTNAME -U $BUCARDO_NEW_USERNAME -d $BUCARDO_OLD_DATABASE -f schema.sql
+psql -h $BUCARDO_NEW_HOSTNAME -U $BUCARDO_NEW_USERNAME -d $BUCARDO_NEW_DATABASE -f schema.sql
 
 # Setup bucardo sync (autokick=0) ensures that nothing is transfered yet
-bucardo_cmd add sync my_sync_2021 herd=my_herd dbs=my_group autokick=0
+bucardo_cmd add sync $BUCARDO_SYNC_NAME herd=my_herd dbs=my_group autokick=0
 
 # Migrate the data using compression in order to minimize file size. Make sure
 # that you don't transfer Bucardo's data or anything else that is not managed by
@@ -99,6 +101,6 @@ export PGOPTIONS=''
 # Reset autokick flag and start continuous multi-master replication
 echo "Starting Bucardo"
 bucardo_cmd start
-bucardo_cmd update sync bg_sync_2021 autokick=1
+bucardo_cmd update sync $BUCARDO_SYNC_NAME autokick=1
 bucardo_cmd reload config
 bucardo_cmd restart
